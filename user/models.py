@@ -11,7 +11,7 @@ class User(AbstractBaseUser):
         유저 이메일주소 -> 회원가입할때 사용하는 아이디
         유저 비밀번호   -> default
     """
-    profile_img = models.TextField()
+    profile_image = models.TextField()
     nickname = models.CharField(max_length=24, unique=True)
     name = models.CharField(max_length=24)
     email = models.EmailField(unique=True)

@@ -206,15 +206,34 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom"
      style="width: 100%;height: 50px;position: fixed;">
     <div class="container">
-        <img style="height: 30px; object-fit: contain"
-             src="https://www.instagram.com/static/images/web/mobile_nav_type_logo-2x.png/1b47f9d0e595.png">
+        <a href="main"> <img style="height: 30px; object-fit: contain"
+                             src="https://www.instagram.com/static/images/web/mobile_nav_type_logo-2x.png/1b47f9d0e595.png">
+        </a>
         <input class="form-control" style="width: 200px" type="search" placeholder="Search" aria-label="Search">
-        <div>
-            <span class="material-icons">home</span>
-            <span class="material-icons">send</span>
-            <span id="nav_bar_add_box" class="material-icons-outlined">add_box</span>
-            <span class="material-icons-outlined">explore</span>
-            <span class="material-icons-outlined">favorite_border</span>
+        <div style="display: flex">
+            <a href="main" style="color: black"> <span class="material-icons"
+                                                       style="padding-right: 10px">home</span></a>
+            <span id="nav_bar_add_box" class="material-icons-outlined" style="padding-right: 10px">add_box</span>
+
+            <div class="dropdown">
+                <a href="#" role="button" id="dropdownMenuLink"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="profile_box" style="width: 25px; height: 25px">
+
+                        <img class="profile_img"
+                             src="{% get_media_prefix %}{{ user.profile_image }}">
+
+                    </div>
+                </a>
+
+                <ul class="dropdown-menu" style="left: 10px" aria-labelledby="dropdownMenuLink">
+                    <li><a class="dropdown-item" href="/content/profile">프로필</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="/user/logout">로그아웃</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </nav>
@@ -227,9 +246,9 @@
             <div class="border feed_box">
                 <div class="feed_name">
                     <div class="profile_box">
-                        <img class="profile_img" src="{{ feed.profile_image }}">
+                        <img class="profile_img" src="{% get_media_prefix %}{{ feed.profile_image }}">
                     </div>
-                    <span class="feed_name_txt"> {{ feed.user_id }} </span>
+                    <span class="feed_name_txt"> {{ feed.nickname }} </span>
                 </div>
                 <img class="feed_img" src="{% get_media_prefix %}{{ feed.image }}">
 
@@ -244,14 +263,18 @@
                     </div>
                 </div>
                 <div class="feed_like">
-                    <p class="feed_txt"><b>좋아요 {{ feed.like_count }}개</b></p>
+                    <p class="feed_txt">춘식이 <b>외 {{ feed.like_count }}명</b>이 좋아합니다</p>
                 </div>
                 <div class="feed_content">
                     <p class="feed_txt"><b> {{ feed.user_id }} </b> {{ feed.content }}</p>
                 </div>
                 <div class="feed_reply">
-                    <span class="feed_txt"> <b> kang97ko </b> 너무 예쁘당 </span>
-                    <span class="feed_txt"> <b> gusrb07030 </b> 와... </span>
+                    {% for reply in feed.reply_list %}
+                        <span class="feed_txt"> <b> {{ reply.nickname }} </b> {{ reply.reply_content }} </span>
+                    {% endfor %}
+                </div>
+
+                <div><input type="text" class="form-control" placeholder="댓글 달기..."></div>
                 </div>
             </div>
         {% endfor %}
@@ -263,7 +286,7 @@
             <div style="display: flex; align-items: center; ">
                 <div class="big_profile_box">
                     <img class="profile_img"
-                         src="http://newsimg.hankookilbo.com/2019/04/29/201904291390027161_3.jpg">
+                         src="{% get_media_prefix %}{{ user.profile_image }}">
                 </div>
                 <div class="name_content">
                     <span class="feed_name_txt"> {{ user.nickname }} </span>
@@ -361,14 +384,14 @@
 <div id="first_modal" class="modal_overlay">
     <div class="modal_window">
         <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <div style="width: 40px; background: gray">
+            <div style="width: 40px">
 
             </div>
             <div>
                 새 이미지 업로드
             </div>
-            <div style="width: 40px; background: gray">
-                <span class="material-icons-outlined">close</span>
+            <div style="width: 40px">
+                <span class="modal_close material-icons-outlined">close</span>
             </div>
         </div>
 
@@ -389,8 +412,8 @@
             <div>
                 새 이미지 업로드
             </div>
-            <div style="width: 40px; background: gray">
-                <span class="material-icons-outlined">close</span>
+            <div style="width: 40px">
+                <span class="modal_close material-icons-outlined">close</span>
             </div>
         </div>
 
@@ -416,6 +439,14 @@
 
 <!-- Optional JavaScript; choose one of the two! -->
 <script>
+    $(".modal_close").click(function () {
+        $('#first_modal').css({
+            display: 'none'
+        });
+        $('#second_modal').css({
+            display: 'none'
+        });
+    });
 
     let files;
 
@@ -435,16 +466,12 @@
         let file = files[0];
         let image = files[0].name;
         let content = $('#input_feed_content').val();
-        let user_id = "thisisminjun";
-        let profile_image = "http://newsimg.hankookilbo.com/2019/04/29/201904291390027161_3.jpg";
 
         let fd = new FormData();
 
         fd.append('file', file);
         fd.append('image', image);
         fd.append('content', content);
-        fd.append('user_id', user_id);
-        fd.append('profile_image', profile_image);
 
         $.ajax({
             url: "/content/upload",
@@ -519,7 +546,7 @@
             alert('이미지가 아닙니다.');
             return;
         }
-    }
+    };
 
 </script>
 
