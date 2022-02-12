@@ -268,6 +268,49 @@
     </div>
 </div>
 
+<div style="border-top: solid 2px rgba(50,50,50,0.1); width: 100%">
+
+    <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; margin: 20px">
+        <div id="button_feed_list" style="cursor: pointer; margin: 0 30px; display: flex; flex-direction: row; align-items: center"><span class="material-icons-outlined">grid_on</span>내 게시물</div>
+        <div id="button_feed_like_list" style="cursor: pointer; margin: 0 30px; display: flex; flex-direction: row; align-items: center"><span class="material-icons-outlined">favorite_border</span>좋아요</div>
+        <div id="button_feed_bookmark_list" style="cursor: pointer; margin: 0 30px; display: flex; flex-direction: row; align-items: center"><span class="material-icons-outlined">bookmark_border</span>북마크</div>
+    </div>
+</div>
+
+
+<div id="feed_list" style="width: 100%; min-width: 1000px; display: flex; align-items: center; justify-content: center">
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 1000px; justify-content: center">
+        {% for feed in feed_list %}
+            <div style="width: 300px; height: 300px; margin: 10px 5px 0px 5px">
+                <img class="feed_img" style="width: 300px; height:300px; object-fit: cover"
+                     src="{% get_media_prefix %}{{ feed.image }}">
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="like_feed_list" style="width: 100%; min-width: 1000px; display: none; align-items: center; justify-content: center">
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 1000px; justify-content: center">
+        {% for feed in like_feed_list %}
+            <div style="width: 300px; height: 300px; margin: 10px 5px 0px 5px">
+                <img class="feed_img" style="width: 300px; height:300px; object-fit: cover"
+                     src="{% get_media_prefix %}{{ feed.image }}">
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="bookmark_feed_list" style="width: 100%; min-width: 1000px; display: none; align-items: center; justify-content: center">
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 1000px; justify-content: center">
+        {% for feed in bookmark_feed_list %}
+            <div style="width: 300px; height: 300px; margin: 10px 5px 0px 5px">
+                <img class="feed_img" style="width: 300px; height:300px; object-fit: cover"
+                     src="{% get_media_prefix %}{{ feed.image }}">
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
 
 <!-- 첫번째 모달-->
 <div id="first_modal" class="modal_overlay">
@@ -328,6 +371,47 @@
 
 <!-- Optional JavaScript; choose one of the two! -->
 <script>
+
+    $("#button_feed_list").click(function(){
+       $('#feed_list').css({
+           display : 'flex'
+       })
+       $('#like_feed_list').css({
+           display : 'none'
+       })
+       $('#bookmark_feed_list').css({
+           display : 'none'
+       })
+    });
+
+    $("#button_feed_like_list").click(function(){
+       $('#feed_list').css({
+           display : 'none'
+       })
+       $('#like_feed_list').css({
+           display : 'flex'
+       })
+       $('#bookmark_feed_list').css({
+           display : 'none'
+       })
+    });
+
+    $("#button_feed_bookmark_list").click(function(){
+       $('#feed_list').css({
+           display : 'none'
+       })
+       $('#like_feed_list').css({
+           display : 'none'
+       })
+       $('#bookmark_feed_list').css({
+           display : 'flex'
+       })
+    });
+
+
+
+
+
     $(".modal_close").click(function () {
         $('#first_modal').css({
             display: 'none'
