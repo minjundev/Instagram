@@ -1,3 +1,3 @@
 # Instagram
 
-Web frontend & backend prodect
+Web frontend & backend project
